@@ -1,8 +1,9 @@
 import sys
 
 from pyspark.sql import SparkSession
+
 from lib.logger import Log4J
-from lib.utils import load_survey_df
+from lib.utils import load_survey_df, count_by_country
 
 if __name__ == "__main__":
     spark = SparkSession \
@@ -16,6 +17,10 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     survey_df = load_survey_df(spark, sys.argv[1])
-    survey_df.show()
+    # applying transformation, group by country
+    count_df = count_by_country(survey_df)
+    # count_df.show()
 
+    # log data as collect
+    logger.info(count_df.collect())
     logger.info("Finished execution")
